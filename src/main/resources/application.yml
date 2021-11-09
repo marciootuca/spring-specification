@@ -1,0 +1,57 @@
+server:
+  port: 8082
+  shutdown: graceful
+
+spring:
+  application:
+    name: cmsBlock
+  cache:
+    type: redis
+  redis:
+    host: ${REDIS_HOST:redis-ms-manager-front.6lxsp0.0001.use1.cache.amazonaws.com}
+    port: 6379
+    database: 1
+  datasource:
+    username: dbusr_prd_rchlo
+    password: testqa225
+    url: jdbc:mysql://172.27.89.219:3306/prd_rchlo_db
+
+riachuelo:
+
+  security:
+    auth:
+      enabled: false
+      resource-server:
+        client-id: ${spring.application.name}
+      jwt:
+        issuer-uri: https://login-stg.omni.riachuelo.net/auth/realms/rchlo-corp
+      authorization:
+        cms-block:
+          resource-paths:
+            paths:
+              - /cmsBlock/v1
+            http-methods: post
+          roles-alowed:
+            - Admin.Access
+
+      insecure-paths:
+        h2-database:
+          paths:
+            - /h2-console/**
+
+
+  logstash:
+    server:
+      # Para obter o endereço correto verifique o endereço abaixo
+      # https://backstage.k8s-corp.riachuelo.net.br/catalog/default/component/tribe-operation-services/docs/elastic_pipe_rchlo/
+      # ou entre em contato com o time de operações.
+      destination: ${LOGSTASH_HOST:fake-host}
+
+springdoc:
+  version: '@project.version@'
+  swagger-ui:
+    oauth:
+      clientId: ${spring.application.name}
+      clientSecret:
+
+
